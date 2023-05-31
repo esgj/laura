@@ -5,17 +5,6 @@ import (
 	"strings"
 )
 
-type Engine struct {
-	classes map[string]*Class
-}
-
-type Class map[string]Token
-
-type Token struct {
-	count int
-	Score float32
-}
-
 func (c *Class) getSum() float32 {
 	var sum int
 	for _, token := range *c {
