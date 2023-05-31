@@ -1,8 +1,7 @@
-package main
+package laura
 
 import (
 	"errors"
-	"fmt"
 	"strings"
 )
 
@@ -72,27 +71,23 @@ func (e *Engine) getClass(key string) *Class {
 	}
 }
 
-func (e Engine) String() string {
-	var result []Class
-	for _, class := range e.classes {
-		result = append(result, *class)
-	}
-	return fmt.Sprintf("Result: %v", result)
-}
-/* 
-func (e *Engine) GetLikelyIntent(text string) string {
+func (e *Engine) GetLikelyIntent(text string) map[string]float32 {
+	points := make(map[string]float32)
 	words := strings.Split(text, " ")
-	class := make(Class)
-	class.updateClass(words)
-	class.calc()
-	
-} */
+	inputClass := make(Class)
+	inputClass.updateClass(words)
+	for intent, class := range e.classes {
+		points[intent] = class.Compare(inputClass)
+	}
+	return points
+}
 
 func (c *Class) Compare(input Class) float32 {
 	var sum float32
-	for key, token := range input {
-		if match, ok := (*c)[key]; ok && token.Score > 0.1 {
+	for key := range input {
+		if match, ok := (*c)[key]; ok {
 			sum += match.Score
 		}
 	}
+	return sum
 }
